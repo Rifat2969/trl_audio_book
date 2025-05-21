@@ -90,6 +90,8 @@ class _AddEmailState extends State<AddEmail> with TickerProviderStateMixin {
                 ),
               ),
             ),
+
+            // Animated gradient overlay container (from top)
             SlideTransition(
               position: _topAnimation,
               child: Container(
@@ -159,9 +161,9 @@ class _AddEmailState extends State<AddEmail> with TickerProviderStateMixin {
                         width: 90.width,
                         decoration: ShapeDecoration(
                           shape: RoundedRectangleBorder(
-                            side: const BorderSide(
+                            side: BorderSide(
                               width: 1,
-                              color: Color(0xFF737F97),
+                              color: const Color(0xFF737F97),
                             ),
                             borderRadius: BorderRadius.circular(8),
                           ),

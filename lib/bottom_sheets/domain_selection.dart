@@ -149,7 +149,7 @@ class _DomainSelectionState extends State<DomainSelection> {
                 shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
               ),
               child: const Text(
-                'Continue',
+                'Confirm',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 14,
