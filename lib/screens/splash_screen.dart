@@ -2,8 +2,10 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:trl_audio_book/login/add_email.dart';
+import 'package:trl_audio_book/animations/fade_route.dart';
 import 'package:trl_audio_book/utils/size_config.dart';
+
+import '../login/add_email.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -21,20 +23,14 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(seconds: 3), // adjust speed here
+      duration: const Duration(seconds: 1), // adjust speed here
     )..addListener(() {
         setState(() {
           _progressValue = _controller.value;
         });
         if (_controller.isCompleted) {
           // Navigate when done
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(builder: (context) => const AddEmail()),
-          );
-/*
-          Navigator.push(context, MaterialPageRoute(builder: (context) => const AddEmail()));
-*/
+          Navigator.pushReplacement(context, FadeRoute(page: const AddEmail()));
         }
       });
 
