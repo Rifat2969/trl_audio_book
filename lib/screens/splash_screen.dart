@@ -5,7 +5,7 @@ import 'package:flutter_svg/svg.dart';
 import 'package:trl_audio_book/animations/fade_route.dart';
 import 'package:trl_audio_book/utils/size_config.dart';
 
-import '../login/add_email.dart';
+import '../login/email_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -45,7 +45,6 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
 
   @override
   Widget build(BuildContext context) {
-    SizeConfig.initMediaQuery(context);
     return Scaffold(
       body: Container(
         decoration: const BoxDecoration(

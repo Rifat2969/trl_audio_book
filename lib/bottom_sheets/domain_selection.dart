@@ -137,7 +137,7 @@ class _DomainSelectionState extends State<DomainSelection> {
               if (selectedIndex != null) {
                 // handle selection action
                 debugPrint('Selected: ${all_domains[selectedIndex!].domain}');
-                Navigator.push(context, MaterialPageRoute(builder: (context) => const LoginScreen()));
+                Navigator.push(context, MaterialPageRoute(builder: (context) => LoginScreen()));
               }
             },
             child: Container(

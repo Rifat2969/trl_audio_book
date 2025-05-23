@@ -1,26 +1,24 @@
+import 'package:email_validator/email_validator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:trl_audio_book/utils/size_config.dart';
 
 import '../bottom_sheets/domain_selection.dart';
-import '../screens/forget_password.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class AddEmail extends StatefulWidget {
+  const AddEmail({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<AddEmail> createState() => _AddEmailState();
 }
 
-class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin {
-  final TextEditingController _passwordController = TextEditingController();
+class _AddEmailState extends State<AddEmail> with TickerProviderStateMixin {
+  final TextEditingController _emailController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
   late AnimationController _topController;
   late AnimationController _bottomController;
   late Animation<Offset> _topAnimation;
   late Animation<Offset> _bottomAnimation;
-
-  bool _obscureText = true;
 
   @override
   void initState() {
@@ -58,7 +56,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
 
   @override
   void dispose() {
-    _passwordController.dispose();
+    _emailController.dispose();
     _topController.dispose();
     _bottomController.dispose();
     super.dispose();
@@ -177,61 +175,36 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                             ),
                           ),
                           child: TextFormField(
-                            controller: _passwordController,
-                            obscureText: _obscureText,
+                            controller: _emailController,
+                            focusNode: FocusNode(),
                             style: const TextStyle(color: Colors.white),
-                            decoration: InputDecoration(
-                              hintText: 'Type password here',
-                              hintStyle: const TextStyle(color: Colors.white54),
-                              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
+                            keyboardType: TextInputType.emailAddress,
+                            decoration: const InputDecoration(
+                              hintText: 'Enter your email',
+                              hintStyle: TextStyle(color: Colors.white54),
+                              contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 18),
                               border: InputBorder.none,
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  _obscureText ? Icons.visibility_outlined : Icons.visibility_off_outlined,
-                                  color: Colors.white70,
-                                ),
-                                onPressed: () {
-                                  setState(() {
-                                    _obscureText = !_obscureText;
-                                  });
-                                },
+                              suffixIcon: Padding(
+                                padding: EdgeInsets.only(right: 12),
+                                child: Icon(Icons.email_outlined, color: Colors.white70),
                               ),
                             ),
                             validator: (value) {
                               if (value == null || value.isEmpty) {
-                                return 'Password is required';
+                                return 'Email is required';
                               }
-                              if (value.length < 6) {
-                                return 'Minimum 6 characters';
+                              if (!EmailValidator.validate(value)) {
+                                return 'Enter a valid email';
                               }
                               return null;
                             },
-                          ),
-                        ),
-                        const SizedBox(height: 10),
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: InkWell(
-                            onTap: () {
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => const ForgetPassword()));
-                            },
-                            child: const Text(
-                              'Forgot Password?',
-                              style: TextStyle(
-                                color: Color(0xFFFCFCFF),
-                                fontSize: 14,
-                                fontFamily: 'Outfit',
-                                fontWeight: FontWeight.w400,
-                                height: 1.43,
-                              ),
-                            ),
                           ),
                         ),
                         SizedBox(height: 2.height),
                         GestureDetector(
                           onTap: () {
                             if (_formKey.currentState!.validate()) {
-                              debugPrint('Password submitted: ${_passwordController.text}');
+                              debugPrint('Email submitted: ${_emailController.text}');
                               showModalBottomSheet(
                                 context: context,
                                 isScrollControlled: true,
@@ -249,7 +222,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                             ),
                             child: const Text(
-                              'Login',
+                              'Continue',
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 14,

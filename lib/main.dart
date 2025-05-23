@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:trl_audio_book/screens/splash_screen.dart';
+import 'package:trl_audio_book/screens/otp_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
-      home: SplashScreen(),
+      home: OTPScreen(),
     );
   }
 }

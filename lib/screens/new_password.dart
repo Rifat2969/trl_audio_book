@@ -1,56 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:trl_audio_book/screens/password_updated.dart';
 import 'package:trl_audio_book/utils/size_config.dart';
 
-import '../bottom_sheets/domain_selection.dart';
-import '../screens/forget_password.dart';
-
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+class NewPassword extends StatefulWidget {
+  const NewPassword({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<NewPassword> createState() => _NewPasswordState();
 }
 
-class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin {
-  final TextEditingController _passwordController = TextEditingController();
+class _NewPasswordState extends State<NewPassword> with TickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
+  final TextEditingController _newPasswordController = TextEditingController();
+  final TextEditingController _confirmPasswordController = TextEditingController();
+
   late AnimationController _topController;
   late AnimationController _bottomController;
   late Animation<Offset> _topAnimation;
   late Animation<Offset> _bottomAnimation;
 
-  bool _obscureText = true;
-
   @override
   void initState() {
     super.initState();
+    _topController = AnimationController(vsync: this, duration: const Duration(milliseconds: 800));
+    _bottomController = AnimationController(vsync: this, duration: const Duration(milliseconds: 800));
 
-    _topController = AnimationController(
-      duration: const Duration(milliseconds: 800),
-      vsync: this,
-    );
-
-    _bottomController = AnimationController(
-      duration: const Duration(milliseconds: 800),
-      vsync: this,
-    );
-
-    _topAnimation = Tween<Offset>(
-      begin: const Offset(0, -1),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _topController,
-      curve: Curves.easeOut,
-    ));
-
-    _bottomAnimation = Tween<Offset>(
-      begin: const Offset(0, 1),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _bottomController,
-      curve: Curves.easeOut,
-    ));
+    _topAnimation = Tween<Offset>(begin: const Offset(0, -1), end: Offset.zero)
+        .animate(CurvedAnimation(parent: _topController, curve: Curves.easeOut));
+    _bottomAnimation = Tween<Offset>(begin: const Offset(0, 1), end: Offset.zero)
+        .animate(CurvedAnimation(parent: _bottomController, curve: Curves.easeOut));
 
     _topController.forward();
     _bottomController.forward();
@@ -58,10 +37,26 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
 
   @override
   void dispose() {
-    _passwordController.dispose();
+    _newPasswordController.dispose();
+    _confirmPasswordController.dispose();
     _topController.dispose();
     _bottomController.dispose();
     super.dispose();
+  }
+
+  String? _validatePassword(String? value) {
+    if (value == null || value.isEmpty) return 'Password is required';
+    if (value.length < 8) return 'Must be at least 8 characters';
+    if (!RegExp(r'[A-Z]').hasMatch(value)) return 'Must include an uppercase letter';
+    if (!RegExp(r'[a-z]').hasMatch(value)) return 'Must include a lowercase letter';
+    if (!RegExp(r'[0-9]').hasMatch(value)) return 'Must include a number';
+    return null;
+  }
+
+  String? _validateConfirmPassword(String? value) {
+    if (value == null || value.isEmpty) return 'Confirm your password';
+    if (value != _newPasswordController.text) return 'Passwords do not match';
+    return null;
   }
 
   @override
@@ -82,8 +77,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                 ),
               ),
             ),
-
-            // Background image (animated from top)
+            // Background image
             SlideTransition(
               position: _topAnimation,
               child: Container(
@@ -95,8 +89,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                 ),
               ),
             ),
-
-            // Overlay gradient (animated from top)
+            // Overlay gradient
             SlideTransition(
               position: _topAnimation,
               child: Container(
@@ -115,15 +108,12 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                 ),
               ),
             ),
-
+            // Content
+            // Content
             SafeArea(
               child: SingleChildScrollView(
                 keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-                padding: EdgeInsets.only(
-                  top: 44.height,
-                  left: 5.width,
-                  right: 5.width,
-                ),
+                padding: EdgeInsets.only(top: 8.height, left: 5.width, right: 5.width),
                 physics: const BouncingScrollPhysics(),
                 child: SlideTransition(
                   position: _bottomAnimation,
@@ -132,15 +122,16 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        SvgPicture.asset(
-                          'assets/svg_icons/Logo.svg',
-                          height: 6.height,
-                        ),
-                        SizedBox(height: 10.height),
+                        // Add vertical space before logo
+                        SizedBox(height: 22.height),
+
+                        SvgPicture.asset('assets/svg_icons/Logo.svg', height: 6.height),
+                        SizedBox(height: 5.height),
+
                         const SizedBox(
                           width: 342,
                           child: Text(
-                            'Make Travel Time Pay',
+                            'Set New Password',
                             textAlign: TextAlign.center,
                             style: TextStyle(
                               color: Colors.white,
@@ -152,91 +143,83 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                             ),
                           ),
                         ),
-                        SizedBox(height: 1.height),
-                        const SizedBox(
-                          width: 342,
-                          child: Text(
-                            'Check out our collection of business titles',
-                            textAlign: TextAlign.center,
-                            style: TextStyle(
-                              color: Color(0xFFEFF3FB),
-                              fontSize: 14,
-                              fontFamily: 'Outfit',
-                              fontWeight: FontWeight.w300,
-                              height: 1.43,
-                            ),
+                        SizedBox(
+                          height: 2.height,
+                        ),
+                        Text(
+                          'Let’s set a strong a password for your account',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: const Color(0xFFEFF3FB) /* Offwhite-Offwhite-1 */,
+                            fontSize: 14,
+                            fontFamily: 'Outfit',
+                            fontWeight: FontWeight.w300,
+                            height: 1.43,
                           ),
                         ),
-                        SizedBox(height: 4.height),
+                        SizedBox(height: 6.height),
+
+                        /// New Password Field
                         Container(
                           width: 90.width,
+                          margin: EdgeInsets.only(bottom: 3.height),
                           decoration: ShapeDecoration(
+                            color: const Color(0xFF2B2F3D),
                             shape: RoundedRectangleBorder(
-                              side: const BorderSide(width: 1, color: Color(0xFF737F97)),
+                              side: const BorderSide(width: 1, color: Color(0xFF454B5F)),
                               borderRadius: BorderRadius.circular(8),
                             ),
                           ),
                           child: TextFormField(
-                            controller: _passwordController,
-                            obscureText: _obscureText,
+                            controller: _newPasswordController,
+                            obscureText: true,
                             style: const TextStyle(color: Colors.white),
-                            decoration: InputDecoration(
-                              hintText: 'Type password here',
-                              hintStyle: const TextStyle(color: Colors.white54),
-                              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
+                            decoration: const InputDecoration(
+                              hintText: 'New Password',
+                              hintStyle: TextStyle(color: Colors.white54),
+                              contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 18),
                               border: InputBorder.none,
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  _obscureText ? Icons.visibility_outlined : Icons.visibility_off_outlined,
-                                  color: Colors.white70,
-                                ),
-                                onPressed: () {
-                                  setState(() {
-                                    _obscureText = !_obscureText;
-                                  });
-                                },
-                              ),
                             ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Password is required';
-                              }
-                              if (value.length < 6) {
-                                return 'Minimum 6 characters';
-                              }
-                              return null;
-                            },
+                            validator: _validatePassword,
                           ),
                         ),
-                        const SizedBox(height: 10),
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: InkWell(
-                            onTap: () {
-                              Navigator.push(context, MaterialPageRoute(builder: (context) => const ForgetPassword()));
-                            },
-                            child: const Text(
-                              'Forgot Password?',
-                              style: TextStyle(
-                                color: Color(0xFFFCFCFF),
-                                fontSize: 14,
-                                fontFamily: 'Outfit',
-                                fontWeight: FontWeight.w400,
-                                height: 1.43,
-                              ),
+
+                        /// Confirm Password Field
+                        Container(
+                          width: 90.width,
+                          margin: EdgeInsets.only(bottom: 3.height),
+                          decoration: ShapeDecoration(
+                            color: const Color(0xFF2B2F3D),
+                            shape: RoundedRectangleBorder(
+                              side: const BorderSide(width: 1, color: Color(0xFF454B5F)),
+                              borderRadius: BorderRadius.circular(8),
                             ),
                           ),
+                          child: TextFormField(
+                            controller: _confirmPasswordController,
+                            obscureText: true,
+                            style: const TextStyle(color: Colors.white),
+                            decoration: const InputDecoration(
+                              hintText: 'Retype New Password',
+                              hintStyle: TextStyle(color: Colors.white54),
+                              contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 18),
+                              border: InputBorder.none,
+                            ),
+                            validator: _validateConfirmPassword,
+                          ),
                         ),
-                        SizedBox(height: 2.height),
+
+                        // Flexible space before button
+                        SizedBox(height: 5.height),
+
+                        /// Continue Button
                         GestureDetector(
                           onTap: () {
                             if (_formKey.currentState!.validate()) {
-                              debugPrint('Password submitted: ${_passwordController.text}');
-                              showModalBottomSheet(
-                                context: context,
-                                isScrollControlled: true,
-                                backgroundColor: Colors.transparent,
-                                builder: (_) => const DomainSelection(),
+                              debugPrint('Password Reset Successful');
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(builder: (context) => const PasswordUpdated()),
                               );
                             }
                           },
@@ -249,7 +232,7 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                             ),
                             child: const Text(
-                              'Login',
+                              'Continue',
                               style: TextStyle(
                                 color: Colors.white,
                                 fontSize: 14,
@@ -259,13 +242,12 @@ class _LoginScreenState extends State<LoginScreen> with TickerProviderStateMixin
                             ),
                           ),
                         ),
-                        SizedBox(height: 7.height)
                       ],
                     ),
                   ),
                 ),
               ),
-            ),
+            )
           ],
         ),
       ),
